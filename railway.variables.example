@@ -1,0 +1,16 @@
+# Paste into Railway → your Node/web service → Variables
+# If your MySQL service is NOT named "MySQL", change every "MySQL" below to that exact name.
+
+# --- required ---
+MYSQL_URL=${{ MySQL.MYSQL_URL }}
+JWT_SECRET=REPLACE_WITH_openssl_rand_hex_32_OUTPUT
+NODE_ENV=production
+SETUP_ENABLED=false
+
+# --- store ---
+STORE_NAME=Gunneeeers Store
+STORE_WHATSAPP=249112780717
+STORE_EMAIL=emadsesko@gmail.com
+
+# --- only if MySQL.MYSQL_URL is missing — use this instead of MYSQL_URL above ---
+# MYSQL_URL=mysql://${{ MySQL.MYSQLUSER }}:${{ MySQL.MYSQLPASSWORD }}@${{ MySQL.MYSQLHOST }}:${{ MySQL.MYSQLPORT }}/${{ MySQL.MYSQLDATABASE }}
