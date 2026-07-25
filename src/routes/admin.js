@@ -14,6 +14,7 @@ const {
   setAuthCookie,
   clearAuthCookie,
   hashPassword,
+  passwordStrongEnough,
 } = require('../middleware/auth');
 const { isSafePhotoFilename, UPLOAD_DIR } = require('../middleware/upload');
 
@@ -239,8 +240,8 @@ router.post('/users', requireAuth('admin'), async (req, res, next) => {
       if (!username || username.length > 64 || !/^[a-zA-Z0-9._-]+$/.test(username)) {
         return res.redirect('/admin/users?err=Invalid+username');
       }
-      if (password.length < 10 || password.length > 128) {
-        return res.redirect('/admin/users?err=Password+must+be+10-128+chars');
+      if (!passwordStrongEnough(password)) {
+        return res.redirect('/admin/users?err=Password+must+be+10%2B+chars+with+letters+and+numbers');
       }
       if (!config.roles.includes(role)) {
         return res.redirect('/admin/users?err=Invalid+role');

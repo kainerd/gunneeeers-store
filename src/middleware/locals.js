@@ -1,14 +1,14 @@
 'use strict';
 
-const config = require('./config');
-const { readUserFromRequest } = require('./middleware/auth');
+const config = require('../config');
+const { readUserFromRequest } = require('./auth');
 const {
   whatsappUrl,
   mailtoUrl,
   platformLabel,
   priceRangeLabel,
   deliveryLabel,
-} = require('./lib/helpers');
+} = require('../lib/helpers');
 
 function localsMiddleware(req, res, next) {
   res.locals.storeName = config.store.name;

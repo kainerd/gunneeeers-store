@@ -1,26 +1,28 @@
-# Deploy (Node.js)
+# Deploy Gunneeeers Store (Node + Express + MySQL)
 
-This app is **Node + Express + MySQL**. It will **not** run on PHP-only hosts (InfinityFree/AwardSpace) or GitHub Pages.
+## One-click (Render)
 
-## Option A — Render / Railway / Fly.io
+1. Create a free MySQL DB (e.g. [Railway MySQL](https://railway.app) or [AlwaysData](https://www.alwaysdata.com/en/register/)).
+2. Import `sql/schema.sql` into that database.
+3. Open: https://render.com/deploy?repo=https://github.com/kainerd/gunneeeers-store
+4. Set env vars: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` (JWT can be auto-generated).
+5. Keep `SETUP_ENABLED=false` (admin already exists in your local DB — create admin on the **production** DB with `SETUP_ENABLED=true` once, then set false again).
 
-1. Create a MySQL database (PlanetScale, Railway MySQL, or AlwaysData MySQL).
-2. Import `sql/schema.sql`.
-3. Set env vars from `.env.example` (`DB_*`, `JWT_SECRET`, `STORE_*`, `NODE_ENV=production`).
-4. Deploy from GitHub: start command `npm start`, Node 18+.
-5. Visit `https://your-app/setup` once → create admin → then block `/setup` (or remove the route).
+## Railway
 
-## Option B — VPS
+```bash
+npm i -g @railway/cli
+railway login
+railway init
+railway add --database mysql
+railway up
+```
 
-1. Install Node 18+, nginx, MySQL.
-2. `git clone` repo, `npm install --omit=dev`, copy `.env`.
-3. Import schema, `npm start` under systemd/pm2.
-4. Reverse-proxy with nginx + HTTPS (Let's Encrypt).
+Then set the same env vars from `.env.example` (never commit `.env`).
 
-## After deploy checklist
+## After deploy
 
-- [ ] Strong `JWT_SECRET` and DB password
-- [ ] HTTPS enabled (`Secure` cookies)
-- [ ] `/setup` disabled after first admin
-- [ ] Uploads directory writable by the Node process
-- [ ] WhatsApp + email set in env
+- [ ] HTTPS works
+- [ ] `/setup` returns 403
+- [ ] Admin login works on production DB
+- [ ] Coin prices added in admin

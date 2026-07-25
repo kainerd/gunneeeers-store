@@ -90,7 +90,15 @@ async function authenticate(username, password) {
 }
 
 async function hashPassword(password) {
+  // cost 12: deliberate slow hashing for stored passwords (never store plaintext).
   return bcrypt.hash(password, 12);
+}
+
+/** Reject trivially weak passwords on create (admin/user forms). */
+function passwordStrongEnough(password) {
+  if (typeof password !== 'string' || password.length < 10 || password.length > 128) return false;
+  if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) return false;
+  return true;
 }
 
 module.exports = {
@@ -101,4 +109,5 @@ module.exports = {
   requireAuth,
   authenticate,
   hashPassword,
+  passwordStrongEnough,
 };

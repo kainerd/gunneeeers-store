@@ -48,7 +48,14 @@ app.use(attachCsrf);
 
 app.use(publicRoutes);
 app.use('/admin', verifyCsrf, adminRoutes);
-app.use('/setup', verifyCsrf, setupRoutes);
+// Setup only mounted when explicitly enabled — reduces attack surface.
+if (config.setupEnabled) {
+  app.use('/setup', verifyCsrf, setupRoutes);
+} else {
+  app.use('/setup', (_req, res) => {
+    res.status(403).type('text').send('Setup is disabled.');
+  });
+}
 
 app.use((req, res) => {
   res.status(404).render('error', {
