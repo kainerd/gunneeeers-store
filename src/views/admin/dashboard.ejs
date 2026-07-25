@@ -1,0 +1,103 @@
+<%- include('../partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Dashboard</h1>
+    <p>Signed in as <%= user.username %> · role <span class="badge <%= user.role === 'admin' ? 'badge-admin' : '' %>"><%= user.role %></span></p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <% if (flash) { %><div class="alert alert-success"><%= flash %></div><% } %>
+
+    <h2 class="section-head" style="margin-bottom:0.75rem">Messages</h2>
+    <% if (!messages.length) { %><p class="empty-state">No messages yet.</p><% } else { %>
+      <div class="admin-table-wrap"><table class="data">
+        <thead><tr><th>When</th><th>From</th><th>Subject</th><th>Message</th><th></th></tr></thead>
+        <tbody>
+        <% messages.forEach(function(row){ %>
+          <tr>
+            <td><%= row.created_at %></td>
+            <td><%= row.name %><br><small><%= row.email %></small><% if (row.whatsapp) { %><br><small>WA: <%= row.whatsapp %></small><% } %></td>
+            <td><%= row.subject %><% if (!row.is_read) { %> <span class="badge">New</span><% } %></td>
+            <td><%= row.body %></td>
+            <td>
+              <% if (!row.is_read) { %>
+                <form method="post" action="/admin/messages/<%= row.id %>/read">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn btn-ghost btn-small">Mark read</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+
+    <h2 class="section-head" style="margin:2rem 0 0.75rem">Buy requests</h2>
+    <% if (!buys.length) { %><p class="empty-state">No buy requests yet.</p><% } else { %>
+      <div class="admin-table-wrap"><table class="data">
+        <thead><tr><th>When</th><th>Contact</th><th>Wanted</th><th>Notes</th><th>Status</th></tr></thead>
+        <tbody>
+        <% buys.forEach(function(row){ %>
+          <tr>
+            <td><%= row.created_at %></td>
+            <td><%= row.name %><br><small>WA: <%= row.whatsapp %></small></td>
+            <td><%= platformLabel(row.platform) %><br><strong><%= priceRangeLabel(row.price_range) %></strong></td>
+            <td><%= row.notes || '—' %></td>
+            <td>
+              <form method="post" action="/admin/buy/<%= row.id %>/status">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <select name="status">
+                  <% ['new','contacted','closed'].forEach(function(st){ %>
+                    <option value="<%= st %>" <%= row.status === st ? 'selected' : '' %>><%= st %></option>
+                  <% }) %>
+                </select>
+                <button type="submit" class="btn btn-ghost btn-small" style="margin-top:0.35rem">Update</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+
+    <h2 class="section-head" style="margin:2rem 0 0.75rem">Sell requests</h2>
+    <% if (!sells.length) { %><p class="empty-state">No sell requests yet.</p><% } else { %>
+      <div class="admin-table-wrap"><table class="data">
+        <thead><tr><th>When</th><th>Contact</th><th>Account</th><th>Photo / details</th><th>Status</th></tr></thead>
+        <tbody>
+        <% sells.forEach(function(row){
+             const m = String(row.photo_path || '').match(/^uploads\/sell\/([a-f0-9]{32}\.(jpg|png|webp))$/);
+        %>
+          <tr>
+            <td><%= row.created_at %></td>
+            <td><%= row.name %><br><small>WA: <%= row.whatsapp %></small></td>
+            <td><%= platformLabel(row.platform) %><br><small><%= row.account_level %></small></td>
+            <td>
+              <% if (m) { %>
+                <a href="/admin/photo/<%= m[1] %>" target="_blank" rel="noopener noreferrer">
+                  <img class="sell-thumb" src="/admin/photo/<%= m[1] %>" alt="Account screenshot">
+                </a>
+              <% } else { %><span class="empty-state">No photo</span><% } %>
+              <div><%= row.description %></div>
+            </td>
+            <td>
+              <form method="post" action="/admin/sell/<%= row.id %>/status">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <select name="status">
+                  <% ['new','contacted','closed'].forEach(function(st){ %>
+                    <option value="<%= st %>" <%= row.status === st ? 'selected' : '' %>><%= st %></option>
+                  <% }) %>
+                </select>
+                <button type="submit" class="btn btn-ghost btn-small" style="margin-top:0.35rem">Update</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</section>
+<%- include('../partials/footer') %>

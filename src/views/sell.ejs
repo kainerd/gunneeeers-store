@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Sell your account</h1>
+    <p>Upload a clear screenshot of your squad/account. We review and follow up on WhatsApp.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <% if (success) { %><div class="alert alert-success">Thanks — your sell request and photo were received.</div><% } %>
+    <% if (errors && errors.length) { %>
+      <div class="alert alert-error"><% errors.forEach(function(e){ %><div><%= e %></div><% }) %></div>
+    <% } %>
+    <form class="form" method="post" action="/sell-account" enctype="multipart/form-data" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="hp-field" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <label>Name <input type="text" name="name" maxlength="100" required value="<%= old.name || '' %>"></label>
+      <label>WhatsApp number <input type="text" name="whatsapp" maxlength="32" required value="<%= old.whatsapp || '' %>"></label>
+      <label>Email <span class="hint">(optional)</span> <input type="email" name="email" maxlength="255" value="<%= old.email || '' %>"></label>
+      <label>Platform
+        <select name="platform" required>
+          <option value="">Select…</option>
+          <% platforms.forEach(function(p){ %>
+            <option value="<%= p %>" <%= old.platform === p ? 'selected' : '' %>><%= platformLabel(p) %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Account level <input type="text" name="account_level" maxlength="50" required value="<%= old.account_level || '' %>"></label>
+      <label>Coin balance <span class="hint">(optional)</span> <input type="text" name="coin_balance" maxlength="50" value="<%= old.coin_balance || '' %>"></label>
+      <label>Description <textarea name="description" rows="5" maxlength="5000" required><%= old.description || '' %></textarea></label>
+      <label>Asking price <span class="hint">(optional)</span> <input type="text" name="asking_price" maxlength="50" value="<%= old.asking_price || '' %>"></label>
+      <label>Account photo / screenshot
+        <span class="hint">Required. JPG, PNG, or WebP — max 3 MB</span>
+        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required>
+      </label>
+      <button type="submit" class="btn btn-primary">Submit sell request</button>
+    </form>
+  </div>
+</section>
+<%- include('partials/footer') %>

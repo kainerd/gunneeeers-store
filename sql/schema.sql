@@ -1,8 +1,8 @@
 -- Gunneeeers Store schema (utf8mb4)
 -- Import: mysql -u root < sql/schema.sql
 --
--- SECURITY: No user accounts are seeded here. Create the first admin via setup/generate-admin.php,
--- then delete the setup script. Do not INSERT into users with a hardcoded password hash.
+-- SECURITY: No user accounts are seeded here. Create the first admin via /setup
+-- (Node app) or `npm run setup:admin`, then disable /setup in production.
 -- Coin prices are NOT seeded — admins add them in the dashboard.
 -- Pre-built PS/Xbox/PC/Mobile account listings are NOT used; buyers submit a price-range request.
 

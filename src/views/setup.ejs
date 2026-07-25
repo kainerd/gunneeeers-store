@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+<section class="section">
+  <div class="wrap">
+    <div class="login-panel">
+      <h1>Create first admin</h1>
+      <div class="alert alert-error"><strong>One-time setup.</strong> After creating the admin, remove access to <code>/setup</code> in production.</div>
+      <% if (done) { %>
+        <div class="alert alert-success">Admin created. <a href="/admin/login">Go to login</a></div>
+      <% } else { %>
+        <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+        <form class="form" method="post" action="/setup" autocomplete="off">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <label>Admin username <input type="text" name="username" maxlength="64" required pattern="[A-Za-z0-9._\-]+"></label>
+          <label>Password <input type="password" name="password" minlength="10" maxlength="128" required autocomplete="new-password"></label>
+          <label>Confirm password <input type="password" name="password_confirm" minlength="10" maxlength="128" required autocomplete="new-password"></label>
+          <button type="submit" class="btn btn-primary">Create admin</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

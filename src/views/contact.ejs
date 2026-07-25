@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Contact</h1>
+    <p>Reach us directly or leave a message — we reply manually.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="cta-row" style="margin-bottom:1.75rem">
+      <a class="btn btn-primary" href="<%= waDirect %>" rel="noopener noreferrer">WhatsApp</a>
+      <a class="btn btn-ghost" href="<%= mailDirect %>">Email</a>
+    </div>
+    <% if (success) { %><div class="alert alert-success">Message received. We will get back to you soon.</div><% } %>
+    <% if (errors && errors.length) { %>
+      <div class="alert alert-error"><% errors.forEach(function(e){ %><div><%= e %></div><% }) %></div>
+    <% } %>
+    <form class="form" method="post" action="/contact" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="hp-field" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <label>Name <input type="text" name="name" maxlength="100" required value="<%= old.name || '' %>"></label>
+      <label>Email <input type="email" name="email" maxlength="255" required value="<%= old.email || '' %>"></label>
+      <label>WhatsApp <span class="hint">(optional)</span> <input type="text" name="whatsapp" maxlength="32" value="<%= old.whatsapp || '' %>"></label>
+      <label>Subject <input type="text" name="subject" maxlength="200" required value="<%= old.subject || '' %>"></label>
+      <label>Message <textarea name="body" rows="6" maxlength="5000" required><%= old.body || '' %></textarea></label>
+      <button type="submit" class="btn btn-primary">Send message</button>
+    </form>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Users &amp; roles</h1>
+    <p>Admin can create staff or admin accounts. Passwords are hashed with bcrypt.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <% if (flash) { %><div class="alert alert-success"><%= flash %></div><% } %>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <h2 class="section-head" style="margin-bottom:0.75rem">Create user</h2>
+    <form class="form" method="post" action="/admin/users" autocomplete="off">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="action" value="create">
+      <label>Username <input type="text" name="username" maxlength="64" required pattern="[A-Za-z0-9._\-]+"></label>
+      <label>Password <span class="hint">Min 10 characters</span> <input type="password" name="password" minlength="10" maxlength="128" required autocomplete="new-password"></label>
+      <label>Role
+        <select name="role" required>
+          <option value="staff">staff</option>
+          <option value="admin">admin</option>
+        </select>
+      </label>
+      <button type="submit" class="btn btn-primary">Create user</button>
+    </form>
+
+    <h2 class="section-head" style="margin:2rem 0 0.75rem">Existing users</h2>
+    <div class="admin-table-wrap"><table class="data">
+      <thead><tr><th>Username</th><th>Role</th><th>Active</th><th>Last login</th><th></th></tr></thead>
+      <tbody>
+      <% users.forEach(function(u){ %>
+        <tr>
+          <td><%= u.username %></td>
+          <td><span class="badge <%= u.role === 'admin' ? 'badge-admin' : '' %>"><%= u.role %></span></td>
+          <td><%= u.is_active ? 'Yes' : 'No' %></td>
+          <td><%= u.last_login_at || '—' %></td>
+          <td>
+            <% if (u.id !== user.id) { %>
+              <form method="post" action="/admin/users">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="action" value="toggle">
+                <input type="hidden" name="id" value="<%= u.id %>">
+                <button type="submit" class="btn btn-ghost btn-small"><%= u.is_active ? 'Deactivate' : 'Activate' %></button>
+              </form>
+            <% } else { %><small>(you)</small><% } %>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

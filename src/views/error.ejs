@@ -1,0 +1,9 @@
+<%- include('partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1><%= status || 500 %></h1>
+    <p><%= message || 'Something went wrong.' %></p>
+    <p><a class="btn btn-primary" href="/">Home</a></p>
+  </div>
+</section>
+<%- include('partials/footer') %>

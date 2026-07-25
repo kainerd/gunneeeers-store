@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Coin packages</h1>
+    <p>Prices are set by the store owner. Order on WhatsApp — we confirm before delivery.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <% if (!packages || packages.length === 0) { %>
+      <div class="alert">No coin packages listed yet. Message us on WhatsApp for current prices.</div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="<%= whatsappUrl('Hi ' + storeName + ', I want current coin prices.') %>">Ask on WhatsApp</a>
+        <a class="btn btn-ghost" href="/contact">Contact form</a>
+      </div>
+    <% } else { %>
+      <% ['website', 'in_game'].forEach(function(methodKey) {
+           const list = grouped[methodKey] || [];
+           if (!list.length) return;
+           const methodLabel = deliveryLabel(methodKey);
+      %>
+        <div class="section-head" style="margin-top:1.5rem">
+          <h2><%= methodLabel %></h2>
+        </div>
+        <div class="grid-2" style="margin-bottom:2rem">
+          <% list.forEach(function(pkg) {
+               const amount = Number(pkg.coin_amount);
+               const price = pkg.price_label;
+               const msg = 'Hi ' + storeName + ', I want to order ' + amount + ' coins via ' + methodLabel + ' (' + price + ').';
+          %>
+            <article class="package-block">
+              <h3><%= amount.toLocaleString() %> coins</h3>
+              <p class="meta"><%= methodLabel %></p>
+              <p class="price"><%= price %></p>
+              <div class="cta-row">
+                <a class="btn btn-primary btn-small" href="<%= whatsappUrl(msg) %>" rel="noopener noreferrer">Order on WhatsApp</a>
+                <a class="btn btn-ghost btn-small" href="<%= mailtoUrl('Coin order: ' + amount + ' via ' + methodLabel, msg) %>">Email instead</a>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

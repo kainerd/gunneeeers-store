@@ -1,11 +1,14 @@
-# Secrets / local config overrides (keep examples in repo if added later)
+# Local env (never commit)
 .env
 .env.*
 !.env.example
 
-# Uploaded sell photos (never commit customer screenshots)
+# Dependencies
+node_modules/
+
+# Uploads
 uploads/sell/*
-!uploads/sell/.htaccess
+!uploads/sell/.gitkeep
 
 # OS / editor
 .DS_Store
@@ -17,8 +20,10 @@ Thumbs.db
 
 # Logs
 *.log
+npm-debug.log*
 
-# Local XAMPP / temp
-phase0-check.php
-layout-test.php
-css/phase0-check.css
+# Legacy PHP (removed in Node migration — ignore if leftovers)
+*.php
+
+.npm-cache/
+

@@ -1,0 +1,17 @@
+</main>
+<% if (!isAdminSection) { %>
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-brand"><%= storeName %></p>
+    <p class="footer-note">No online payments on this site. Orders are confirmed manually over WhatsApp or email.</p>
+    <p class="footer-links">
+      <a href="/contact">Contact</a>
+      <a href="<%= whatsappUrl('Hi, I have a question about ' + storeName) %>">WhatsApp</a>
+      <a href="<%= mailtoUrl('Question about ' + storeName, 'Hi,') %>">Email</a>
+    </p>
+  </div>
+</footer>
+<% } %>
+<script src="/js/main.js" defer></script>
+</body>
+</html>

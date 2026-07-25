@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<section class="section">
+  <div class="wrap">
+    <div class="login-panel">
+      <h1>Staff login</h1>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form class="form" method="post" action="/admin/login" autocomplete="username">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label>Username <input type="text" name="username" maxlength="64" required value="<%= username || '' %>"></label>
+        <label>Password <input type="password" name="password" required autocomplete="current-password"></label>
+        <button type="submit" class="btn btn-primary">Log in</button>
+      </form>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

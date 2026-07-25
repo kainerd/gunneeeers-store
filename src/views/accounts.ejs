@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Buy an account</h1>
+    <p>Choose your platform and budget. We match you manually — no online payment on this site.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <% if (success) { %><div class="alert alert-success">Request received. We will contact you on WhatsApp.</div><% } %>
+    <% if (errors && errors.length) { %>
+      <div class="alert alert-error"><% errors.forEach(function(e){ %><div><%= e %></div><% }) %></div>
+    <% } %>
+    <form class="form" method="post" action="/accounts" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="hp-field" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <label>Name <input type="text" name="name" maxlength="100" required value="<%= old.name || '' %>"></label>
+      <label>WhatsApp number <input type="text" name="whatsapp" maxlength="32" required value="<%= old.whatsapp || '' %>"></label>
+      <label>Email <span class="hint">(optional)</span> <input type="email" name="email" maxlength="255" value="<%= old.email || '' %>"></label>
+      <label>Platform
+        <select name="platform" required>
+          <option value="">Select…</option>
+          <% platforms.forEach(function(p){ %>
+            <option value="<%= p %>" <%= old.platform === p ? 'selected' : '' %>><%= platformLabel(p) %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Price range
+        <select name="price_range" required>
+          <option value="">Select your budget…</option>
+          <% priceRanges.forEach(function(r){ %>
+            <option value="<%= r %>" <%= old.price_range === r ? 'selected' : '' %>><%= priceRangeLabel(r) %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Notes <span class="hint">(optional)</span> <textarea name="notes" rows="4" maxlength="2000"><%= old.notes || '' %></textarea></label>
+      <button type="submit" class="btn btn-primary">Request account</button>
+    </form>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+<section class="page-banner">
+  <div class="wrap">
+    <h1>Coin prices</h1>
+    <p>Add packages here. Only active ones appear on the public Coins page.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <% if (flash) { %><div class="alert alert-success"><%= flash %></div><% } %>
+    <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+    <h2 class="section-head" style="margin-bottom:0.75rem">Add package</h2>
+    <form class="form" method="post" action="/admin/coins">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="action" value="create">
+      <label>Delivery method
+        <select name="delivery_method" required>
+          <% deliveries.forEach(function(d){ %><option value="<%= d %>"><%= deliveryLabel(d) %></option><% }) %>
+        </select>
+      </label>
+      <label>Coin amount <input type="number" name="coin_amount" min="1" required></label>
+      <label>Price label <input type="text" name="price_label" maxlength="50" required placeholder="$12.00"></label>
+      <label>Sort order <input type="number" name="sort_order" min="0" max="9999" value="10"></label>
+      <label><input type="checkbox" name="is_active" value="1" checked> Active</label>
+      <button type="submit" class="btn btn-primary">Add package</button>
+    </form>
+
+    <h2 class="section-head" style="margin:2rem 0 0.75rem">Current packages</h2>
+    <% if (!packages.length) { %><p class="empty-state">No packages yet.</p><% } else { %>
+      <% packages.forEach(function(pkg){ %>
+        <form method="post" action="/admin/coins" class="admin-edit-grid" style="margin-bottom:0.75rem;background:#fff;padding:0.75rem">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="id" value="<%= pkg.id %>">
+          <select name="delivery_method">
+            <% deliveries.forEach(function(d){ %>
+              <option value="<%= d %>" <%= pkg.delivery_method === d ? 'selected' : '' %>><%= deliveryLabel(d) %></option>
+            <% }) %>
+          </select>
+          <input type="number" name="coin_amount" value="<%= pkg.coin_amount %>" required>
+          <input type="text" name="price_label" value="<%= pkg.price_label %>" required>
+          <input type="number" name="sort_order" value="<%= pkg.sort_order %>">
+          <label><input type="checkbox" name="is_active" value="1" <%= pkg.is_active ? 'checked' : '' %>> On</label>
+          <div class="cta-row">
+            <button type="submit" name="action" value="update" class="btn btn-navy btn-small">Save</button>
+            <button type="submit" name="action" value="delete" class="btn btn-ghost btn-small">Delete</button>
+          </div>
+        </form>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+<%- include('../partials/footer') %>
