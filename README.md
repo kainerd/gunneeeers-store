@@ -1,15 +1,18 @@
 # Gunneeeers Store
 
-eFootball coins & accounts storefront for **XAMPP** (PHP + MySQL). Visitors browse packages/accounts and order via **WhatsApp** or **email** — there is **no online payment** or cart.
+eFootball coins & accounts storefront (PHP + MySQL) for **XAMPP** and shared hosting. Visitors browse packages/accounts and order via **WhatsApp** or **email** — there is **no online payment** or cart.
 
 Staff use a **role-based admin dashboard** (`admin` / `staff`).
 
+**Source:** [github.com/kainerd/gunneeeers-store](https://github.com/kainerd/gunneeeers-store)
+
 ## Requirements
 
-- XAMPP (Apache + MySQL/MariaDB + PHP 8.x with PDO MySQL)
-- `mod_headers` / `mod_authz_core` enabled (usual XAMPP defaults)
+- Apache (or compatible) + MySQL/MariaDB + PHP 8.x with PDO MySQL
+- `mod_headers` / `mod_authz_core` enabled (usual XAMPP / cPanel defaults)
+- **Not** static hosting — GitHub Pages cannot run this app
 
-## Install
+## Install (local XAMPP)
 
 1. Place this folder in `htdocs` (or junction it), e.g. `C:\xampp\htdocs\gunneeeers-store`.
 2. Start **Apache** and **MySQL** in XAMPP Control Panel.
@@ -31,6 +34,18 @@ Or import `sql/schema.sql` via phpMyAdmin.
 7. **Delete the entire `setup/` folder** from the server immediately after.
 8. Log in at `http://localhost/gunneeeers-store/admin/login.php`
 9. Delete diagnostic pages if present: `phase0-check.php`, `layout-test.php`, `css/phase0-check.css`.
+
+## Deploy from GitHub to shared hosting (cPanel / FTP)
+
+Full steps: **[DEPLOY.md](DEPLOY.md)**. Short version:
+
+1. **Upload or clone** this repo into the host web root (`public_html` or a subdomain folder).
+2. **Create a MySQL database + user** in cPanel; import [`sql/schema.sql`](sql/schema.sql).
+3. On the server, edit [`config/db.php`](config/db.php) and [`config/store.php`](config/store.php) with production values (do not commit real passwords).
+4. Open `/setup/generate-admin.php` once, then **delete the entire `setup/` folder**.
+5. Enable **HTTPS**, confirm admin login, and run the security checklist below.
+
+Live deploy needs host access (FTP/SFTP, cPanel, or SSH) plus MySQL credentials — those are not stored in this repo.
 
 ### Create app DB user (example)
 
