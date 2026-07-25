@@ -2,14 +2,6 @@
 
 require('dotenv').config();
 
-function requireEnv(name, minLen = 1) {
-  const v = process.env[name];
-  if (!v || String(v).length < minLen) {
-    throw new Error(`[security] Missing or too short env: ${name}`);
-  }
-  return v;
-}
-
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
 
@@ -22,19 +14,53 @@ if (/CHANGE_ME|dev_only/i.test(jwtSecret) && isProd) {
   throw new Error('[security] Refusing to start: JWT_SECRET still looks like a placeholder.');
 }
 
+/**
+ * Prefer MYSQL_URL / DATABASE_URL (Railway/Render style).
+ * Example: mysql://user:pass@host:3306/dbname
+ * Railway template ref: ${{ MySQL.MYSQL_URL }}
+ */
+function parseMysqlUrl(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  try {
+    const u = new URL(raw);
+    if (!/^mysql(s)?:$/i.test(u.protocol)) return null;
+    const database = decodeURIComponent((u.pathname || '').replace(/^\//, ''));
+    if (!database) return null;
+    return {
+      host: u.hostname || '127.0.0.1',
+      port: Number(u.port) || 3306,
+      user: decodeURIComponent(u.username || ''),
+      password: decodeURIComponent(u.password || ''),
+      database,
+      // mysql2 supports ssl object when needed (Railway often needs it off by default).
+      ssl: u.searchParams.get('ssl') === 'true' ? {} : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+const urlDb =
+  parseMysqlUrl(process.env.MYSQL_URL) ||
+  parseMysqlUrl(process.env.DATABASE_URL) ||
+  parseMysqlUrl(process.env.MYSQL_PUBLIC_URL);
+
+const db = urlDb || {
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT) || 3306,
+  database: process.env.DB_NAME || 'gunneeeers_store',
+  user: process.env.DB_USER || 'store_app',
+  password: process.env.DB_PASS || '',
+};
+
 const config = {
   port: Number(process.env.PORT) || 3000,
   nodeEnv,
   isProd,
   // Setup route off by default once you have an admin (set SETUP_ENABLED=true only for first boot).
   setupEnabled: String(process.env.SETUP_ENABLED || '').toLowerCase() === 'true',
-  db: {
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: Number(process.env.DB_PORT) || 3306,
-    database: process.env.DB_NAME || 'gunneeeers_store',
-    user: process.env.DB_USER || 'store_app',
-    password: process.env.DB_PASS || '',
-  },
+  db,
+  mysqlUrl: process.env.MYSQL_URL || process.env.DATABASE_URL || null,
   jwt: {
     secret: jwtSecret,
     expiresIn: process.env.JWT_EXPIRES_IN || '8h',
@@ -51,8 +77,8 @@ const config = {
   deliveries: Object.freeze(['website', 'in_game']),
 };
 
-if (isProd && (!config.db.password || /CHANGE_ME/i.test(config.db.password))) {
-  throw new Error('[security] Refusing to start: set a real DB_PASS in production.');
+if (isProd && !urlDb && (!config.db.password || /CHANGE_ME/i.test(config.db.password))) {
+  throw new Error('[security] Refusing to start: set MYSQL_URL or a real DB_PASS in production.');
 }
 
 module.exports = config;

@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise');
 const config = require('./config');
 
 // Pool uses prepared statements via execute() — never concatenate user input into SQL.
-const pool = mysql.createPool({
+const poolOptions = {
   host: config.db.host,
   port: config.db.port,
   user: config.db.user,
@@ -13,9 +13,14 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   namedPlaceholders: false,
-  // Prefer real prepares over client-side emulation where supported.
   enableKeepAlive: true,
-});
+};
+
+if (config.db.ssl) {
+  poolOptions.ssl = config.db.ssl;
+}
+
+const pool = mysql.createPool(poolOptions);
 
 async function query(sql, params = []) {
   const [rows] = await pool.execute(sql, params);

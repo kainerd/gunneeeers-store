@@ -21,13 +21,6 @@ services:
         value: "249112780717"
       - key: STORE_EMAIL
         value: emadsesko@gmail.com
-      - key: DB_HOST
-        sync: false
-      - key: DB_PORT
-        value: "3306"
-      - key: DB_NAME
-        sync: false
-      - key: DB_USER
-        sync: false
-      - key: DB_PASS
+      # Prefer MYSQL_URL from your MySQL addon (Railway: ${{ MySQL.MYSQL_URL }})
+      - key: MYSQL_URL
         sync: false

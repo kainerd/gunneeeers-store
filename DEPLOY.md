@@ -10,15 +10,21 @@
 
 ## Railway
 
-```bash
-npm i -g @railway/cli
-railway login
-railway init
-railway add --database mysql
-railway up
+In the web service variables, set:
+
+```text
+MYSQL_URL=${{ MySQL.MYSQL_URL }}
+JWT_SECRET=<generate a long random string>
+NODE_ENV=production
+SETUP_ENABLED=false
+STORE_NAME=Gunneeeers Store
+STORE_WHATSAPP=249112780717
+STORE_EMAIL=emadsesko@gmail.com
 ```
 
-Then set the same env vars from `.env.example` (never commit `.env`).
+The app reads `MYSQL_URL` (or `DATABASE_URL`) automatically — no need for separate `DB_HOST` / `DB_USER` / `DB_PASS` when the URL is set.
+
+Import `sql/schema.sql` into the Railway MySQL service (Query / mysql CLI), then create the first admin with `SETUP_ENABLED=true` once.
 
 ## After deploy
 
