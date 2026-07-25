@@ -1,0 +1,12 @@
+# Deny script execution in upload directories (defense if misconfigured PHP handlers).
+<IfModule mod_authz_core.c>
+  <FilesMatch "(?i)\.(php|phtml|php3|php4|php5|phar|cgi|pl|py|asp|aspx|exe|sh)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+<IfModule !mod_php.c>
+  # Apache 2.4 without mod_php — still block by extension above.
+</IfModule>
+Options -Indexes
+RemoveHandler .php .phtml .php3 .php4 .php5 .phar
+RemoveType .php .phtml .php3 .php4 .php5 .phar

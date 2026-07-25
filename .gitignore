@@ -1,0 +1,24 @@
+# Secrets / local config overrides (keep examples in repo if added later)
+.env
+.env.*
+!.env.example
+
+# Uploaded sell photos (never commit customer screenshots)
+uploads/sell/*
+!uploads/sell/.htaccess
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Local XAMPP / temp
+phase0-check.php
+layout-test.php
+css/phase0-check.css
